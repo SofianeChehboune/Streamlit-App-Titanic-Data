@@ -1,22 +1,22 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 # -------------------------------
-# CONFIGURATION DE LA PAGE
+# CONFIG PAGE
 # -------------------------------
 st.set_page_config(
-    page_title="Titanic Data Explorer",
+    page_title="Titanic App",
     layout="wide",
     page_icon="🚢"
 )
 
-st.title("🚢 Titanic Data Explorer")
-st.markdown("Visualisation interactive du dataset Titanic utilisé dans *Titanic_Data.ipynb*")
-
 # -------------------------------
-# CHARGEMENT DES DONNÉES
+# LOAD DATA
 # -------------------------------
 @st.cache_data
 def load_data():
@@ -25,68 +25,115 @@ def load_data():
 df = load_data()
 
 # -------------------------------
-# APERÇU DES DONNÉES
+# SIDEBAR MENU
 # -------------------------------
-st.subheader("Aperçu du Dataset")
-st.dataframe(df.head(20))
-
-# Dimensions
-st.write(f"**Nombre de lignes :** {df.shape[0]} | **Nombre de colonnes :** {df.shape[1]}")
-
-# -------------------------------
-# STATISTIQUES GÉNÉRALES
-# -------------------------------
-st.subheader("Statistiques descriptives")
-st.write(df.describe(include="all"))
+menu = st.sidebar.radio(
+    "📌 Navigation",
+    ["Aperçu des données", "Statistiques descriptives", "Visualisations", "Corrélations", "Prédiction ML"]
+)
 
 # -------------------------------
-# VISUALISATIONS
+# PAGE 1 : OVERVIEW
 # -------------------------------
-st.subheader("Visualisations globales")
+if menu == "Aperçu des données":
+    st.title("🚢 Titanic - Aperçu des données")
+    st.write(f"**Nombre de lignes :** {df.shape[0]} | **Nombre de colonnes :** {df.shape[1]}")
+    st.dataframe(df.head(20))
 
-col1, col2 = st.columns(2)
+# -------------------------------
+# PAGE 2 : STATISTICS
+# -------------------------------
+elif menu == "Statistiques descriptives":
+    st.title("📊 Statistiques descriptives")
+    st.write(df.describe(include="all"))
 
-with col1:
-    st.write("**Répartition des survivants (variable cible si présente)**")
-    if "Survived" in df.columns:
+# -------------------------------
+# PAGE 3 : VISUALISATIONS
+# -------------------------------
+elif menu == "Visualisations":
+    st.title("📈 Visualisations")
+    
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if "Survived" in df.columns:
+            st.subheader("Répartition des survivants")
+            fig, ax = plt.subplots()
+            sns.countplot(data=df, x="Survived", ax=ax)
+            st.pyplot(fig)
+
+    with col2:
+        if "Sex" in df.columns:
+            st.subheader("Répartition par sexe")
+            fig, ax = plt.subplots()
+            sns.countplot(data=df, x="Sex", palette="Set2", ax=ax)
+            st.pyplot(fig)
+
+    st.subheader("Analyse par variable")
+    feature = st.selectbox("Choisissez une colonne :", df.columns)
+    if df[feature].dtype == "object":
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Survived", ax=ax)
+        sns.countplot(data=df, x=feature, palette="viridis", ax=ax)
+        plt.xticks(rotation=45)
         st.pyplot(fig)
     else:
-        st.warning("La colonne `Survived` n'existe pas dans ce dataset.")
-
-with col2:
-    st.write("**Répartition par sexe**")
-    if "Sex" in df.columns:
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Sex", ax=ax, palette="Set2")
+        sns.histplot(df[feature], kde=True, color="blue", ax=ax)
         st.pyplot(fig)
+
+# -------------------------------
+# PAGE 4 : CORRELATIONS
+# -------------------------------
+elif menu == "Corrélations":
+    st.title("🔗 Matrice de corrélation")
+    corr = df.corr(numeric_only=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
+    st.pyplot(fig)
+
+# -------------------------------
+# PAGE 5 : ML PREDICTION
+# -------------------------------
+elif menu == "Prédiction ML":
+    st.title("🤖 Prédiction de survie (ML)")
+
+    # Préparation des données
+    data = df.copy()
+    if "Survived" not in data.columns:
+        st.error("La colonne `Survived` est manquante dans le dataset.")
     else:
-        st.warning("La colonne `Sex` n'existe pas dans ce dataset.")
+        data = data.dropna(subset=["Age", "Sex", "Pclass"])  # nettoyage minimal
+        data["Sex"] = data["Sex"].map({"male": 0, "female": 1})
 
-# -------------------------------
-# VISUALISATION DYNAMIQUE
-# -------------------------------
-st.subheader("Analyse par variable")
+        X = data[["Pclass", "Sex", "Age"]]
+        y = data["Survived"]
 
-feature = st.selectbox("Choisissez une colonne à analyser :", df.columns)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-if df[feature].dtype == "object":
-    fig, ax = plt.subplots()
-    sns.countplot(data=df, x=feature, ax=ax, palette="viridis")
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
-else:
-    fig, ax = plt.subplots()
-    sns.histplot(df[feature], kde=True, ax=ax, color="blue")
-    st.pyplot(fig)
+        model = RandomForestClassifier(random_state=42)
+        model.fit(X_train, y_train)
 
-# -------------------------------
-# CORRÉLATIONS
-# -------------------------------
-st.subheader("Matrice de corrélation (variables numériques)")
+        # Accuracy
+        y_pred = model.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        st.write(f"**Précision du modèle :** {acc:.2f}")
 
-corr = df.corr(numeric_only=True)
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
-st.pyplot(fig)
+        # Formulaire utilisateur
+        st.subheader("Faites une prédiction")
+        pclass = st.selectbox("Classe du passager (1=1ère, 2=2ème, 3=3ème)", [1, 2, 3])
+        sex = st.selectbox("Sexe", ["male", "female"])
+        age = st.slider("Âge", 0, 80, 30)
+
+        input_data = pd.DataFrame({
+            "Pclass": [pclass],
+            "Sex": [0 if sex == "male" else 1],
+            "Age": [age]
+        })
+
+        prediction = model.predict(input_data)[0]
+        probability = model.predict_proba(input_data)[0][prediction]
+
+        if prediction == 1:
+            st.success(f"✅ Le modèle prédit : Survie (probabilité {probability:.2f})")
+        else:
+            st.error(f"❌ Le modèle prédit : Décès (probabilité {probability:.2f})")
