@@ -29,13 +29,28 @@ df = load_data()
 # -------------------------------
 menu = st.sidebar.radio(
     "📌 Navigation",
-    ["Aperçu des données", "Statistiques descriptives", "Visualisations", "Corrélations", "Prédiction ML"]
+    ["Accueil", "Aperçu des données", "Statistiques descriptives", "Visualisations", "Corrélations", "Prédiction ML"]
 )
+
+# -------------------------------
+# PAGE ACCUEIL
+# -------------------------------
+if menu == "Accueil":
+    st.title("🚢 Titanic Data App")
+    st.markdown("""
+    Bienvenue dans l’application interactive **Titanic Data Explorer**.  
+    Explorez le dataset du Titanic, analysez les données et testez un modèle de Machine Learning pour prédire la survie des passagers.
+    """)
+    
+    try:
+        st.image("titanic.jpg", use_container_width=True)
+    except:
+        st.warning("⚠️ Image Titanic non trouvée. Placez un fichier `titanic.jpg` dans le dossier du projet.")
 
 # -------------------------------
 # PAGE 1 : OVERVIEW
 # -------------------------------
-if menu == "Aperçu des données":
+elif menu == "Aperçu des données":
     st.title("🚢 Titanic - Aperçu des données")
     st.write(f"**Nombre de lignes :** {df.shape[0]} | **Nombre de colonnes :** {df.shape[1]}")
     st.dataframe(df.head(20))
