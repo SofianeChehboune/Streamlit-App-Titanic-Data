@@ -66,8 +66,7 @@ df = load_data()
 st.sidebar.title("📌 Menu de navigation")
 menu = st.sidebar.radio(
     "",
-    ["🏠 Accueil", "📊 Aperçu des données", "🧹 Nettoyage & Préparation des données",
-     "📈 Statistiques descriptives", "📉 Visualisations", "🔗 Corrélations", "🤖 Prédiction ML"]
+    ["🏠 Accueil", "📊 Aperçu des données", "📈 Statistiques descriptives", "📉 Visualisations", "🔗 Corrélations", "🤖 Prédiction ML"]
 )
 
 # -------------------------------
@@ -76,12 +75,49 @@ menu = st.sidebar.radio(
 if menu == "🏠 Accueil":
     st.markdown(
         """
-        <div style="background: linear-gradient(160deg, #e6ecf5, #a3b6d9 40%, #2c3e50 100%);
-                    border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0px 4px 25px rgba(0,0,0,0.3);">
+        <style>
+        /* Fond ciel clair de nuit */
+        .starry-night {
+            background: linear-gradient(160deg, #e6ecf5, #a3b6d9 40%, #2c3e50 100%);
+            color: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0px 4px 25px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Lune positionnée sur le côté gauche */
+        .starry-night::before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #ffffff, #f0f0f0 70%, #d9d9d9 90%);
+            border-radius: 50%;
+            box-shadow: 0px 0px 20px rgba(255,255,255,0.5);
+        }
+
+        /* Petites étoiles */
+        .starry-night::after {
+            content: "✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧";
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 18px;
+            color: #ffffffe6;
+            letter-spacing: 10px;
+        }
+        </style>
+
+        <div class="starry-night">
             <h1 style="font-size: 2.6em; color:#0d1b2a;">🚢 Titanic Data App</h1>
             <p style="font-size: 1.2em; color:#1a1a1a;">
             Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>
-            Explorez le dataset du Titanic, nettoyez les données et testez un modèle de 
+            Explorez le dataset du Titanic, <b>analysez</b> les données et testez un modèle de 
             Machine Learning pour <b>prédire la survie des passagers</b>.
             </p>
         </div>
@@ -104,31 +140,7 @@ elif menu == "📊 Aperçu des données":
     st.dataframe(df.head(20), use_container_width=True)
 
 # -------------------------------
-# PAGE 2 : NETTOYAGE & PRÉPARATION 🧹
-# -------------------------------
-elif menu == "🧹 Nettoyage & Préparation des données":
-    st.title("🧹 Nettoyage & Préparation des données")
-    st.markdown("---")
-
-    st.subheader("📌 Informations générales (df.info)")
-    buffer = []
-    df.info(buf=buffer)
-    info_str = "\n".join(buffer)
-    st.text(info_str)
-
-    st.subheader("📌 Valeurs manquantes (df.isnull().sum())")
-    st.write(df.isnull().sum())
-
-    st.subheader("📌 Valeurs dupliquées")
-    duplicates = df.duplicated().sum()
-    st.write(f"Nombre de doublons : **{duplicates}**")
-
-    st.subheader("📌 Aperçu des valeurs uniques par colonne")
-    unique_vals = {col: df[col].nunique() for col in df.columns}
-    st.write(pd.DataFrame.from_dict(unique_vals, orient="index", columns=["Valeurs uniques"]))
-
-# -------------------------------
-# PAGE 3 : STATISTIQUES DESCRIPTIVES 📈
+# PAGE 2 : STATISTIQUES DESCRIPTIVES 📈
 # -------------------------------
 elif menu == "📈 Statistiques descriptives":
     st.title("📈 Statistiques descriptives")
@@ -136,7 +148,7 @@ elif menu == "📈 Statistiques descriptives":
     st.write(df.describe(include="all"))
 
 # -------------------------------
-# PAGE 4 : VISUALISATIONS 🖼️
+# PAGE 3 : VISUALISATIONS 🖼️
 # -------------------------------
 elif menu == "📉 Visualisations":
     st.title("📉 Visualisations interactives")
@@ -145,22 +157,23 @@ elif menu == "📉 Visualisations":
 
     with col1:
         st.subheader("Répartition des survivants")
-        fig, ax = plt.subplots(figsize=(5, 4))
+        fig, ax = plt.subplots(figsize=(6, 4))
         sns.countplot(data=df, x="Survived", ax=ax, palette="Blues")
         ax.set_title("Répartition des survivants (0 = Décédé, 1 = Survécu)")
         st.pyplot(fig, use_container_width=True)
 
     with col2:
         st.subheader("Répartition par sexe")
-        fig, ax = plt.subplots(figsize=(5, 4))
+        fig, ax = plt.subplots(figsize=(6, 4))
         sns.countplot(data=df, x="Sex", ax=ax, palette="Pastel1")
         ax.set_title("Répartition par sexe")
         st.pyplot(fig, use_container_width=True)
 
+    st.markdown("---")
     st.subheader("Analyse personnalisée")
     feature = st.selectbox("Choisissez une colonne :", df.columns)
 
-    fig, ax = plt.subplots(figsize=(5, 4))  # Taille harmonisée
+    fig, ax = plt.subplots(figsize=(6, 4))
     if df[feature].dtype == "object":
         sns.countplot(data=df, x=feature, ax=ax, palette="Set2")
         ax.set_title(f"Distribution de la variable : {feature}")
@@ -168,10 +181,11 @@ elif menu == "📉 Visualisations":
     else:
         sns.histplot(df[feature], kde=True, ax=ax, color="steelblue")
         ax.set_title(f"Distribution de la variable : {feature}")
+
     st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
-# PAGE 5 : CORRÉLATIONS 🔗
+# PAGE 4 : CORRÉLATIONS 🔗
 # -------------------------------
 elif menu == "🔗 Corrélations":
     st.title("🔗 Matrice de corrélation")
@@ -186,7 +200,7 @@ elif menu == "🔗 Corrélations":
         st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
-# PAGE 6 : PRÉDICTION ML 🤖
+# PAGE 5 : PRÉDICTION ML 🤖
 # -------------------------------
 elif menu == "🤖 Prédiction ML":
     st.title("🤖 Prédiction de survie (Machine Learning)")
