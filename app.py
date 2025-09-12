@@ -74,11 +74,25 @@ menu = st.sidebar.radio(
 # PAGE ACCUEIL 🏠
 # -------------------------------
 if menu == "🏠 Accueil":
-    st.title("🚢 Titanic Data App")
-    st.markdown("""
-    Bienvenue dans l’application interactive **Titanic Data Explorer** !  
-    Explorez le dataset du Titanic, **analysez** les données et testez un modèle de Machine Learning pour **prédire la survie des passagers**.
-    """)
+    st.markdown(
+    """
+    <h1 style="font-size:42px; text-align:center; color:#1f77b4;">
+        🚢 Titanic Data App
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <p style="font-size:18px; text-align:center;">
+    Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>  
+    Explorez le dataset du Titanic, <b>analysez</b> les données et testez un modèle de Machine Learning pour <b>prédire la survie des passagers</b>.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
     try:
         st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
     except:
