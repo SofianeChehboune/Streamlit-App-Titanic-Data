@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import io
+import plotly.graph_objects as go
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -228,3 +229,36 @@ elif menu == "🤖 Prédiction ML":
             st.success(f"✅ Ce passager aurait survécu (probabilité : {probability:.2f})")
         else:
             st.error(f"❌ Ce passager n’aurait pas survécu (probabilité : {probability:.2f})")
+
+        # -------------------------------
+        # GRAPHIQUES POUR LA PREDICTION 📊
+        # -------------------------------
+        st.subheader("Visualisation de la prédiction")
+
+        # 1 - Gauge Chart
+        fig_gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=probability * 100,
+            title={'text': "Probabilité de survie (%)"},
+            gauge={'axis': {'range': [0, 100]},
+                   'bar': {'color': "green" if prediction == 1 else "red"}}
+        ))
+        st.plotly_chart(fig_gauge, use_container_width=True)
+
+        # 2 - Bar Chart comparatif
+        fig_bar = go.Figure(data=[
+            go.Bar(name="Survie", x=["Résultat"], y=[probability], marker_color="green"),
+            go.Bar(name="Non-survie", x=["Résultat"], y=[1 - probability], marker_color="red")
+        ])
+        fig_bar.update_layout(barmode='group', title="Comparaison des probabilités")
+        st.plotly_chart(fig_bar, use_container_width=True)
+
+        # 3 - Donut Chart
+        fig_pie = go.Figure(data=[go.Pie(
+            labels=["Survie", "Non-survie"],
+            values=[probability, 1 - probability],
+            hole=0.4
+        )])
+        fig_pie.update_traces(marker=dict(colors=["green", "red"]))
+        fig_pie.update_layout(title="Répartition de la prédiction")
+        st.plotly_chart(fig_pie, use_container_width=True)
