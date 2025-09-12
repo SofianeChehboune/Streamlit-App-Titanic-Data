@@ -170,21 +170,20 @@ elif menu == "📉 Visualisations":
         ax.set_title("Répartition par sexe")
         st.pyplot(fig, use_container_width=True)
 
-    st.markdown("---")
     st.subheader("Analyse personnalisée")
     feature = st.selectbox("Choisissez une colonne :", df.columns)
-    fig, ax = plt.subplots()
+    
+# Taille harmonisée avec les autres graphiques
+    
+    fig, ax = plt.subplots(figsize=(6, 4))
     if df[feature].dtype == "object":
         sns.countplot(data=df, x=feature, ax=ax, palette="Set2")
         ax.set_title(f"Distribution de la variable : {feature}")
         plt.xticks(rotation=45)
     else:
-        fig, ax = plt.subplots(figsize=(6, 4))
         sns.histplot(df[feature], kde=True, ax=ax, color="steelblue")
         ax.set_title(f"Distribution de la variable : {feature}")
-    st.pyplot(fig, use_container_width=True)
-    
-
+        st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
 # PAGE 4 : CORRÉLATIONS 🔗
