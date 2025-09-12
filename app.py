@@ -28,8 +28,8 @@ df = load_data()
 # SIDEBAR MENU
 # -------------------------------
 menu = st.sidebar.radio(
-    "📌 Navigation",
-    ["Accueil", "Aperçu des données", "Statistiques descriptives", "Visualisations", "Corrélations", "Prédiction ML"]
+    "📌 # Navigation",
+    ["## Accueil", "## Aperçu des données", " ## Statistiques descriptives", "## Visualisations", "## Corrélations", "## Prédiction ML"]
 )
 
 # -------------------------------
