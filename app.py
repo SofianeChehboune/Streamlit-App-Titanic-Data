@@ -25,13 +25,21 @@ body {
     background-color: #ffffff;
     color: #000000;
 }
-h1, h2, h3 {
+/* Titres */
+h1 {
+    font-size: 42px !important;
+    text-align: center;
+    color: #1f77b4;
+    font-weight: bold;
+}
+h2, h3 {
     color: #0d3b66;
     text-align: center;
     font-weight: bold;
 }
+/* Boutons */
 div.stButton > button {
-    background: #0d6efd;  /* Bleu vif */
+    background: #0d6efd;
     color: white;
     border-radius: 10px;
     font-weight: bold;
@@ -40,13 +48,14 @@ div.stButton > button {
     transition: 0.3s;
 }
 div.stButton > button:hover {
-    background: #084298;  /* Bleu foncé au hover */
+    background: #084298;
     transform: scale(1.05);
 }
-/* Sidebar en gris clair */
+/* Sidebar */
 section[data-testid="stSidebar"] {
-    background: #f4f6f9;
-    color: black;
+    background: #f8f9fa;
+    padding: 20px;
+    border-right: 2px solid #e1e5eb;
 }
 footer {visibility: hidden;}
 </style>
@@ -75,23 +84,21 @@ menu = st.sidebar.radio(
 # -------------------------------
 if menu == "🏠 Accueil":
     st.markdown(
-    """
-    <h1 style="font-size:42px; text-align:center; color:#1f77b4;">
-        🚢 Titanic Data App
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
+        """
+        <h1>🚢 Titanic Data App</h1>
+        """,
+        unsafe_allow_html=True
+    )
 
-st.markdown(
-    """
-    <p style="font-size:18px; text-align:center;">
-    Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>  
-    Explorez le dataset du Titanic, <b>analysez</b> les données et testez un modèle de Machine Learning pour <b>prédire la survie des passagers</b>.
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+    st.markdown(
+        """
+        <p style="font-size:18px; text-align:center;">
+        Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>  
+        Explorez le dataset du Titanic, <b>analysez</b> les données et testez un modèle de Machine Learning pour <b>prédire la survie des passagers</b>.
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
     try:
         st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
@@ -126,15 +133,15 @@ elif menu == "📉 Visualisations":
     with col1:
         st.subheader("Répartition des survivants")
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Survived", ax=ax, palette="Blues")
-        ax.set_title("Répartition des survivants (0 = Décédé, 1 = Survécu)")
+        sns.countplot(data=df, x="Survived", ax=ax, palette="Greens")
+        ax.set_title("Répartition des survivants (0 = Décédé, 1 = Survécu)", fontsize=12)
         st.pyplot(fig, use_container_width=True)
 
     with col2:
         st.subheader("Répartition par sexe")
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Sex", ax=ax, palette="Pastel1")
-        ax.set_title("Répartition par sexe")
+        sns.countplot(data=df, x="Sex", ax=ax, palette="Oranges")
+        ax.set_title("Répartition par sexe", fontsize=12)
         st.pyplot(fig, use_container_width=True)
 
     st.markdown("---")
@@ -142,7 +149,7 @@ elif menu == "📉 Visualisations":
     feature = st.selectbox("Choisissez une colonne :", df.columns)
     fig, ax = plt.subplots()
     if df[feature].dtype == "object":
-        sns.countplot(data=df, x=feature, ax=ax, palette="Set2")
+        sns.countplot(data=df, x=feature, ax=ax, palette="Blues")
         ax.set_title(f"Distribution de la variable : {feature}")
         plt.xticks(rotation=45)
     else:
