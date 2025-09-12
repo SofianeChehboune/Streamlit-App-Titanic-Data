@@ -123,15 +123,25 @@ elif menu == "Visualisations":
     st.pyplot(fig)
 
 # -------------------------------
-# PAGE 4 : CORRÉLATIONS 🔗
-# -------------------------------
 elif menu == "Corrélations":
     st.title("🔗 Matrice de corrélation")
     st.markdown("---")
-    corr = df.corr(numeric_only=True)
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
-    st.pyplot(fig)
+    
+    # Assurez-vous que le DataFrame contient uniquement des colonnes numériques pour la corrélation
+    numeric_df = df.select_dtypes(include=['number'])
+
+    # Vérifiez s'il y a des colonnes numériques à corréler
+    if numeric_df.empty:
+        st.warning("⚠️ Le DataFrame ne contient pas de colonnes numériques pour calculer la corrélation.")
+    else:
+        corr = numeric_df.corr()
+        
+        # Ajustez la taille de la figure pour une meilleure lisibilité
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Utilisez 'annot_kws' pour ajuster la taille de la police des annotations
+        sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax, annot_kws={"fontsize": 10})
+        st.pyplot(fig)
 
 # -------------------------------
 # PAGE 5 : PRÉDICTION ML 🤖
