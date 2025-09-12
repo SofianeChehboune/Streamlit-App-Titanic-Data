@@ -179,9 +179,12 @@ elif menu == "📉 Visualisations":
         ax.set_title(f"Distribution de la variable : {feature}")
         plt.xticks(rotation=45)
     else:
+        fig, ax = plt.hisplot(figsize=(8, 5))
         sns.histplot(df[feature], kde=True, ax=ax, color="steelblue")
         ax.set_title(f"Distribution de la variable : {feature}")
     st.pyplot(fig, use_container_width=True)
+    
+
 
 # -------------------------------
 # PAGE 4 : CORRÉLATIONS 🔗
