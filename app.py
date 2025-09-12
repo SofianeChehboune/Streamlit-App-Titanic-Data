@@ -80,9 +80,9 @@ if menu == "🏠 Accueil":
     Explorez le dataset du Titanic, **analysez** les données et testez un modèle de Machine Learning pour **prédire la survie des passagers**.
     """)
     try:
-        st.image("titanic app.png", use_container_width=True, caption="Légendaire Titanic ⚓")
+        st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
     except:
-        st.warning("⚠️ L'image `titanic app.png` est introuvable.")
+        st.warning("⚠️ L'image `titanic.png` est introuvable.")
 
 # -------------------------------
 # PAGE 1 : APERÇU DES DONNÉES 📊
