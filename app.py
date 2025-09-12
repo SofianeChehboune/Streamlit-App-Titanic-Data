@@ -75,14 +75,46 @@ menu = st.sidebar.radio(
 if menu == "🏠 Accueil":
     st.markdown(
         """
-        <div style="
-            background: linear-gradient(145deg, #0a0a0a, #1e1e2f); 
-            color: #e0e0e0; 
-            border-radius: 15px; 
-            padding: 25px; 
-            text-align: center; 
-            box-shadow: 0px 4px 20px rgba(0,0,0,0.6);
-        ">
+        <style>
+        /* Fond ciel étoilé avec lune */
+        .starry-night {
+            background: radial-gradient(circle at 50% 20%, #f5f5f5, #1e1e2f 60%, #0a0a0a 100%);
+            color: #f0f0f0;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0px 4px 25px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Lune */
+        .starry-night::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #fdfdfd, #cfcfcf 70%);
+            border-radius: 50%;
+            box-shadow: 0px 0px 20px rgba(255,255,255,0.6);
+        }
+
+        /* Petites étoiles */
+        .starry-night::after {
+            content: "✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧";
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #ffffffcc;
+            letter-spacing: 8px;
+        }
+        </style>
+
+        <div class="starry-night">
             <h1 style="font-size: 2.5em;">🚢 Titanic Data App</h1>
             <p style="font-size: 1.2em;">
             Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>
