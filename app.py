@@ -82,7 +82,7 @@ if menu == "🏠 Accueil":
     try:
         st.image("titanic app.png", use_container_width=True, caption="Légendaire Titanic ⚓")
     except:
-        st.warning("⚠️ L'image `titanic.png` est introuvable.")
+        st.warning("⚠️ L'image `titanic app.png` est introuvable.")
 
 # -------------------------------
 # PAGE 1 : APERÇU DES DONNÉES 📊
