@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import plotly.figure_factory as ff
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 # -------------------------------
-# CONFIG PAGE ⚙️
+# CONFIGURATION DE LA PAGE ⚙️
 # -------------------------------
 st.set_page_config(
     page_title="Titanic App",
@@ -16,29 +16,43 @@ st.set_page_config(
 )
 
 # -------------------------------
-# CSS CUSTOM 🎨
+# STYLE CSS PERSONNALISÉ 🎨
 # -------------------------------
 st.markdown("""
 <style>
-h1, h2, h3 {
-    text-align: center;
-    color: #1a426e;
+/* Couleurs globales */
+body {
+    background-color: #f8fbfd;
 }
-footer {visibility: hidden;}
-.reportview-container {
-    background: #f8fbfd;
+h1, h2, h3 {
+    color: #1a426e;
+    text-align: center;
 }
 div.stButton > button {
-    background-color: #1a426e;
+    background: linear-gradient(90deg, #1a426e, #3a7bd5);
     color: white;
-    border-radius: 10px;
+    border-radius: 12px;
     font-weight: bold;
+    padding: 0.6em 1.2em;
+    transition: 0.3s;
 }
+div.stButton > button:hover {
+    background: linear-gradient(90deg, #3a7bd5, #1a426e);
+    transform: scale(1.05);
+}
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: #1a426e;
+}
+section[data-testid="stSidebar"] .css-1d391kg {
+    color: white;
+}
+footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------
-# LOAD DATA 💾
+# CHARGEMENT DES DONNÉES 💾
 # -------------------------------
 @st.cache_data
 def load_data():
@@ -47,116 +61,140 @@ def load_data():
 df = load_data()
 
 # -------------------------------
-# HEADER 🚢
+# BARRE LATÉRALE - MENU 🧭
 # -------------------------------
-st.title("🚢 Titanic Data Explorer")
-st.markdown("### Explorez, analysez et prédisez la survie des passagers du Titanic ⚓")
-
-# -------------------------------
-# TABS 📑
-# -------------------------------
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["🏠 Accueil", "📊 Données", "📈 Visualisations", "🔗 Corrélations", "🤖 Prédiction ML"]
+st.sidebar.title("📌 Menu de navigation")
+menu = st.sidebar.radio(
+    "",
+    ["🏠 Accueil", "📊 Aperçu des données", "📈 Statistiques descriptives", "📉 Visualisations", "🔗 Corrélations", "🤖 Prédiction ML"]
 )
 
 # -------------------------------
-# TAB 1 : Accueil
+# PAGE ACCUEIL 🏠
 # -------------------------------
-with tab1:
-    st.image("https://i.ibb.co/4YjNQGc/titanic.jpg", use_container_width=True)
-    st.success("Bienvenue dans cette app interactive ! Vous pouvez naviguer dans les onglets pour explorer et prédire la survie des passagers.")
+if menu == "🏠 Accueil":
+    st.title("🚢 Titanic Data App")
+    st.markdown("""
+    Bienvenue dans l’application interactive **Titanic Data Explorer** !  
+    Explorez le dataset du Titanic, **analysez** les données et testez un modèle de Machine Learning pour **prédire la survie des passagers**.
+    """)
+    try:
+        st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
+    except:
+        st.warning("⚠️ L'image `titanic.png` est introuvable.")
 
 # -------------------------------
-# TAB 2 : Données
+# PAGE 1 : APERÇU DES DONNÉES 📊
 # -------------------------------
-with tab2:
-    st.subheader("Aperçu du dataset Titanic")
-    st.write(df.head(20))
+elif menu == "📊 Aperçu des données":
+    st.title("📊 Aperçu des données")
+    st.markdown("---")
+    st.info(f"**Nombre de lignes :** {df.shape[0]} | **Nombre de colonnes :** {df.shape[1]}")
+    st.dataframe(df.head(20), use_container_width=True)
 
-    st.markdown("### Statistiques descriptives")
+# -------------------------------
+# PAGE 2 : STATISTIQUES DESCRIPTIVES 📈
+# -------------------------------
+elif menu == "📈 Statistiques descriptives":
+    st.title("📈 Statistiques descriptives")
+    st.markdown("---")
     st.write(df.describe(include="all"))
 
 # -------------------------------
-# TAB 3 : Visualisations
+# PAGE 3 : VISUALISATIONS 🖼️
 # -------------------------------
-with tab3:
-    st.subheader("Exploration interactive")
+elif menu == "📉 Visualisations":
+    st.title("📉 Visualisations interactives")
+    st.markdown("---")
     col1, col2 = st.columns(2)
 
     with col1:
-        fig1 = px.histogram(df, x="Survived", color="Sex", barmode="group",
-                            title="Répartition des survivants par sexe")
-        st.plotly_chart(fig1, use_container_width=True)
+        st.subheader("Répartition des survivants")
+        fig, ax = plt.subplots()
+        sns.countplot(data=df, x="Survived", ax=ax, palette="coolwarm")
+        ax.set_title("Répartition des survivants (0 = Décédé, 1 = Survécu)")
+        st.pyplot(fig, use_container_width=True)
 
     with col2:
-        fig2 = px.histogram(df, x="Pclass", color="Survived", barmode="group",
-                            title="Classe des passagers vs Survie")
-        st.plotly_chart(fig2, use_container_width=True)
+        st.subheader("Répartition par sexe")
+        fig, ax = plt.subplots()
+        sns.countplot(data=df, x="Sex", ax=ax, palette="viridis")
+        ax.set_title("Répartition par sexe")
+        st.pyplot(fig, use_container_width=True)
 
-    feature = st.selectbox("Choisissez une variable :", df.columns)
-    if df[feature].dtype != "object":
-        fig3 = px.histogram(df, x=feature, nbins=30, title=f"Distribution de {feature}", marginal="box")
+    st.markdown("---")
+    st.subheader("Analyse personnalisée")
+    feature = st.selectbox("Choisissez une colonne :", df.columns)
+    fig, ax = plt.subplots()
+    if df[feature].dtype == "object":
+        sns.countplot(data=df, x=feature, ax=ax, palette="Set2")
+        ax.set_title(f"Distribution de la variable : {feature}")
+        plt.xticks(rotation=45)
     else:
-        fig3 = px.histogram(df, x=feature, title=f"Distribution de {feature}", color="Survived")
-    st.plotly_chart(fig3, use_container_width=True)
+        sns.histplot(df[feature], kde=True, ax=ax, color="darkcyan")
+        ax.set_title(f"Distribution de la variable : {feature}")
+    st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
-# TAB 4 : Corrélations
+# PAGE 4 : CORRÉLATIONS 🔗
 # -------------------------------
-with tab4:
-    st.subheader("Matrice de corrélation")
+elif menu == "🔗 Corrélations":
+    st.title("🔗 Matrice de corrélation")
+    st.markdown("---")
     numeric_df = df.select_dtypes(include=['number'])
-    corr = numeric_df.corr()
-    fig = ff.create_annotated_heatmap(
-        z=corr.values,
-        x=list(corr.columns),
-        y=list(corr.index),
-        colorscale="Blues",
-        showscale=True
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-# -------------------------------
-# TAB 5 : Prédiction ML
-# -------------------------------
-with tab5:
-    st.subheader("Prédiction de survie")
-
-    data = df.dropna(subset=["Age", "Sex", "Pclass", "Fare"])
-    data["Sex"] = data["Sex"].map({"male": 0, "female": 1})
-
-    X = data[["Pclass", "Sex", "Age", "Fare"]]
-    y = data["Survived"]
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    model = RandomForestClassifier(random_state=42)
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    st.success(f"Précision du modèle : {acc:.2f}")
-
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        pclass = st.selectbox("Classe", [1, 2, 3])
-    with col2:
-        sex = st.selectbox("Sexe", ["male", "female"])
-    with col3:
-        age = st.slider("Âge", 0, 80, 30)
-    with col4:
-        fare = st.slider("Tarif du billet", 0, 500, 50)
-
-    input_data = pd.DataFrame({
-        "Pclass": [pclass],
-        "Sex": [0 if sex == "male" else 1],
-        "Age": [age],
-        "Fare": [fare]
-    })
-
-    prediction = model.predict(input_data)[0]
-    probability = model.predict_proba(input_data)[0][prediction]
-
-    if prediction == 1:
-        st.success(f"✅ Ce passager aurait survécu (probabilité : {probability:.2f})")
+    if numeric_df.empty:
+        st.warning("⚠️ Pas de colonnes numériques à corréler.")
     else:
-        st.error(f"❌ Ce passager n’aurait pas survécu (probabilité : {probability:.2f})")
+        corr = numeric_df.corr()
+        fig, ax = plt.subplots(figsize=(7, 5))
+        sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax, annot_kws={"fontsize": 10})
+        st.pyplot(fig, use_container_width=True)
+
+# -------------------------------
+# PAGE 5 : PRÉDICTION ML 🤖
+# -------------------------------
+elif menu == "🤖 Prédiction ML":
+    st.title("🤖 Prédiction de survie (Machine Learning)")
+    st.markdown("---")
+
+    data = df.copy()
+    if "Survived" not in data.columns:
+        st.error("❌ La colonne `Survived` est manquante.")
+    else:
+        data = data.dropna(subset=["Age", "Sex", "Pclass"])
+        data["Sex"] = data["Sex"].map({"male": 0, "female": 1})
+
+        X = data[["Pclass", "Sex", "Age"]]
+        y = data["Survived"]
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        model = RandomForestClassifier(random_state=42)
+        model.fit(X_train, y_train)
+
+        y_pred = model.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        st.success(f"**Précision du modèle :** {acc:.2f}")
+
+        st.subheader("Faites une prédiction")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            pclass = st.selectbox("Classe", [1, 2, 3])
+        with col2:
+            sex = st.selectbox("Sexe", ["male", "female"])
+        with col3:
+            age = st.slider("Âge", 0, 80, 30)
+
+        input_data = pd.DataFrame({
+            "Pclass": [pclass],
+            "Sex": [0 if sex == "male" else 1],
+            "Age": [age]
+        })
+
+        prediction = model.predict(input_data)[0]
+        probability = model.predict_proba(input_data)[0][prediction]
+
+        st.markdown("### Résultat")
+        if prediction == 1:
+            st.success(f"✅ Ce passager aurait survécu (probabilité : {probability:.2f})")
+        else:
+            st.error(f"❌ Ce passager n’aurait pas survécu (probabilité : {probability:.2f})")
