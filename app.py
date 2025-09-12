@@ -21,11 +21,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 /* Style pour la barre latérale et le menu de navigation */
-div[data-testid="stSidebarNav"] {
-    background-color: #0d2847; /* Couleur de fond de la barre latérale */
-}
 div[data-testid="stSidebarNav"] li a {
-    color: white; /* Couleur du texte du menu */
     font-weight: bold; /* Texte en gras */
     font-size: 1.1rem; /* Taille de la police plus grande */
     margin: 5px 0;
