@@ -129,7 +129,7 @@ elif menu == "Corrélations":
     st.title("🔗 Matrice de corrélation")
     st.markdown("---")
     corr = df.corr(numeric_only=True)
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(6, 4))
     sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
     st.pyplot(fig)
 
