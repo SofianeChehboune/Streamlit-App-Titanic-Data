@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import io
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -90,9 +91,9 @@ if menu == "🏠 Accueil":
     )
 
     try:
-        st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
+        st.image("titanic .png", use_container_width=True, caption="Légendaire Titanic ⚓")
     except:
-        st.warning("⚠️ L'image `titanic.png` est introuvable.")
+        st.warning("⚠️ L'image `titanic .png` est introuvable.")
 
 # -------------------------------
 # PAGE 1 : APERÇU DES DONNÉES 📊
@@ -111,9 +112,9 @@ elif menu == "🧹 Nettoyage des données":
     st.markdown("---")
 
     with st.expander("ℹ️ Infos générales (df.info)"):
-        buffer = []
-        df.info(buf=buffer.append)
-        st.text("".join(buffer))
+        buffer = io.StringIO()
+        df.info(buf=buffer)
+        st.text(buffer.getvalue())
 
     with st.expander("🔍 Valeurs manquantes (df.isnull)"):
         st.write(df.isnull().sum())
