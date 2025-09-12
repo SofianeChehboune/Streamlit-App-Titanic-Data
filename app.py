@@ -76,47 +76,46 @@ if menu == "🏠 Accueil":
     st.markdown(
         """
         <style>
-        /* Fond ciel étoilé avec lune */
+        /* Fond ciel clair de nuit */
         .starry-night {
-            background: radial-gradient(circle at 50% 20%, #f5f5f5, #1e1e2f 60%, #0a0a0a 100%);
-            color: #f0f0f0;
+            background: linear-gradient(160deg, #e6ecf5, #a3b6d9 40%, #2c3e50 100%);
+            color: #1a1a1a;
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
             text-align: center;
-            box-shadow: 0px 4px 25px rgba(0,0,0,0.6);
+            box-shadow: 0px 4px 25px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
         }
 
-        /* Lune */
+        /* Lune positionnée sur le côté gauche */
         .starry-night::before {
             content: "";
             position: absolute;
-            top: 20px;
-            right: 40px;
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #fdfdfd, #cfcfcf 70%);
+            top: 40px;
+            left: 40px;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #ffffff, #f0f0f0 70%, #d9d9d9 90%);
             border-radius: 50%;
-            box-shadow: 0px 0px 20px rgba(255,255,255,0.6);
+            box-shadow: 0px 0px 20px rgba(255,255,255,0.5);
         }
 
         /* Petites étoiles */
         .starry-night::after {
             content: "✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧";
             position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 15px;
+            right: 20px;
             font-size: 18px;
-            color: #ffffffcc;
-            letter-spacing: 8px;
+            color: #ffffffe6;
+            letter-spacing: 10px;
         }
         </style>
 
         <div class="starry-night">
-            <h1 style="font-size: 2.5em;">🚢 Titanic Data App</h1>
-            <p style="font-size: 1.2em;">
+            <h1 style="font-size: 2.6em; color:#0d1b2a;">🚢 Titanic Data App</h1>
+            <p style="font-size: 1.2em; color:#1a1a1a;">
             Bienvenue dans l’application interactive <b>Titanic Data Explorer</b> !<br>
             Explorez le dataset du Titanic, <b>analysez</b> les données et testez un modèle de 
             Machine Learning pour <b>prédire la survie des passagers</b>.
@@ -127,9 +126,10 @@ if menu == "🏠 Accueil":
     )
 
     try:
-        st.image("titanic .png", use_container_width=True, caption="Légendaire Titanic ⚓")
+        st.image("titanic.png", use_container_width=True, caption="Légendaire Titanic ⚓")
     except:
-        st.warning("⚠️ L'image `titanic .png` est introuvable.")
+        st.warning("⚠️ L'image `titanic.png` est introuvable.")
+
 
 # -------------------------------
 # PAGE 1 : APERÇU DES DONNÉES 📊
