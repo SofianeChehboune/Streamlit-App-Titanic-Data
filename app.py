@@ -20,32 +20,33 @@ st.set_page_config(
 # -------------------------------
 st.markdown("""
 <style>
-/* Couleurs globales */
+/* Fond général clair */
 body {
-    background-color: #f8fbfd;
+    background-color: #ffffff;
+    color: #000000;
 }
 h1, h2, h3 {
-    color: #1a426e;
+    color: #0d3b66;
     text-align: center;
+    font-weight: bold;
 }
 div.stButton > button {
-    background: linear-gradient(90deg, #1a426e, #3a7bd5);
+    background: #0d6efd;  /* Bleu vif */
     color: white;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: bold;
     padding: 0.6em 1.2em;
+    border: none;
     transition: 0.3s;
 }
 div.stButton > button:hover {
-    background: linear-gradient(90deg, #3a7bd5, #1a426e);
+    background: #084298;  /* Bleu foncé au hover */
     transform: scale(1.05);
 }
-/* Sidebar */
+/* Sidebar en gris clair */
 section[data-testid="stSidebar"] {
-    background: #1a426e;
-}
-section[data-testid="stSidebar"] .css-1d391kg {
-    color: white;
+    background: #f4f6f9;
+    color: black;
 }
 footer {visibility: hidden;}
 </style>
@@ -111,14 +112,14 @@ elif menu == "📉 Visualisations":
     with col1:
         st.subheader("Répartition des survivants")
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Survived", ax=ax, palette="coolwarm")
+        sns.countplot(data=df, x="Survived", ax=ax, palette="Blues")
         ax.set_title("Répartition des survivants (0 = Décédé, 1 = Survécu)")
         st.pyplot(fig, use_container_width=True)
 
     with col2:
         st.subheader("Répartition par sexe")
         fig, ax = plt.subplots()
-        sns.countplot(data=df, x="Sex", ax=ax, palette="viridis")
+        sns.countplot(data=df, x="Sex", ax=ax, palette="Pastel1")
         ax.set_title("Répartition par sexe")
         st.pyplot(fig, use_container_width=True)
 
@@ -131,7 +132,7 @@ elif menu == "📉 Visualisations":
         ax.set_title(f"Distribution de la variable : {feature}")
         plt.xticks(rotation=45)
     else:
-        sns.histplot(df[feature], kde=True, ax=ax, color="darkcyan")
+        sns.histplot(df[feature], kde=True, ax=ax, color="steelblue")
         ax.set_title(f"Distribution de la variable : {feature}")
     st.pyplot(fig, use_container_width=True)
 
@@ -147,7 +148,7 @@ elif menu == "🔗 Corrélations":
     else:
         corr = numeric_df.corr()
         fig, ax = plt.subplots(figsize=(7, 5))
-        sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax, annot_kws={"fontsize": 10})
+        sns.heatmap(corr, annot=True, fmt=".2f", cmap="Blues", ax=ax, annot_kws={"fontsize": 10})
         st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
