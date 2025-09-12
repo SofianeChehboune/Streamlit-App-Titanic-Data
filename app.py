@@ -137,7 +137,7 @@ elif menu == "Corrélations":
         corr = numeric_df.corr()
         
         # Ajustez la taille de la figure pour une meilleure lisibilité
-        fig, ax = plt.subplots(figsize=(5, 7))
+        fig, ax = plt.subplots(figsize=(7, 5))
         
         # Utilisez 'annot_kws' pour ajuster la taille de la police des annotations
         sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax, annot_kws={"fontsize": 10})
