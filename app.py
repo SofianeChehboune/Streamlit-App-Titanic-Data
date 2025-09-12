@@ -43,7 +43,7 @@ if menu == "Accueil":
     """)
     
     try:
-        st.image("titanic.jpg", use_container_width=True)
+        st.image("titanic.png", use_container_width=True)
     except:
         st.warning("⚠️ Image Titanic non trouvée. Placez un fichier `titanic.jpg` dans le dossier du projet.")
 
