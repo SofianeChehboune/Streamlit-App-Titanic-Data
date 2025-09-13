@@ -21,7 +21,7 @@ st.set_page_config(
 # -------------------------------
 st.markdown("""
 <style>
-    /* Thème général */
+    /* Thème général (mode clair) */
     body {
         color: #333;
         background-color: #f0f2f6;
@@ -55,6 +55,39 @@ st.markdown("""
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+
+    /* Astuce de lisibilité : Adaptation pour le mode sombre */
+    [data-theme="dark"] body {
+        color: #fafafa;
+        background-color: #0e1117;
+    }
+    [data-theme="dark"] .stApp {
+        background-image: none;
+    }
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3 {
+        color: #a0c8e0; /* Bleu clair pour les titres */
+        text-shadow: 1px 1px 2px #000;
+    }
+    [data-theme="dark"] .stButton>button {
+        background-color: #a0c8e0;
+        color: #0a2a43;
+        border-color: #a0c8e0;
+    }
+    [data-theme="dark"] .stButton>button:hover {
+        background-color: #0a2a43;
+        color: #a0c8e0;
+    }
+    [data-theme="dark"] .stMetric {
+        background-color: #1c2129;
+        border-left-color: #a0c8e0;
+    }
+    /* Le bloc d'accueil a un fond clair, on force le texte en sombre */
+    [data-theme="dark"] div[style*="background-color: rgba(255, 255, 255, 0.8)"] {
+        color: #333 !important;
+    }
+
     footer {
         visibility: hidden;
     }
@@ -200,6 +233,16 @@ def page_prediction():
     
     accuracy = accuracy_score(y_test, model.predict(X_test))
     st.info(f"**Précision du modèle sur les données de test :** {accuracy:.2%}")
+
+    with st.expander("À propos du modèle de prédiction"):
+        st.markdown("""
+        Le modèle utilisé est un **`RandomForestClassifier`** de la bibliothèque Scikit-learn. 
+        
+        Cet algorithme est un modèle d'ensemble qui construit une "forêt" de plusieurs arbres de décision pendant l'entraînement et produit la classe qui est le mode des classes (classification) des arbres individuels.
+        
+        Les paramètres du modèle entraîné sont les suivants :
+        """)
+        st.code(f"{model}")
 
     col1, col2 = st.columns(2)
 
