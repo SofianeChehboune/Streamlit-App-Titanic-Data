@@ -37,7 +37,7 @@ Les données utilisées proviennent du dataset Titanic rendu célèbre par [Kagg
 
 ## 🤖 Modélisation
 - **Algorithme utilisé** : Random Forest Classifier
-- **Précision obtenue** : **0.76** (accuracy)
+- **Précision obtenue** : **0.80** (accuracy)
 
 👉 Résultats corrects mais encore perfectibles par du feature engineering et des modèles avancés (XGBoost, LightGBM, etc.).
 
